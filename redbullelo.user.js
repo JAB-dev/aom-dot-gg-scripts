@@ -37,7 +37,7 @@
     }, 500);
 
     function enhanceTable(table) {
-        addMeanColumn(table);
+        // addMeanColumn(table);
         makeHeadersSortable(table);
         addRowCounter(table); // Comment this out if you dont care about the row counter on the right
     }
