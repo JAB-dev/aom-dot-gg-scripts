@@ -136,7 +136,7 @@ function updateRowCounter(tbody) {
         if (!counterCell) {
             counterCell = document.createElement('td');
             counterCell.classList.add('p-4', 'text-xl', 'align-middle', 'row-counter');
-            row.insertBefore(counterCell, row.firstChild); // Insert at the beginning of the row
+            row.appendChild(counterCell); // Append to the end of the row
         }
         counterCell.textContent = counter;
         counter++;
@@ -148,7 +148,7 @@ function updateRowCounter(tbody) {
         const counterHeader = document.createElement('th');
         counterHeader.classList.add('p-4', 'text-xl', 'row-counter');
         counterHeader.textContent = '#';
-        headerRow.insertBefore(counterHeader, headerRow.firstChild);
+        headerRow.appendChild(counterHeader); // Append to the end of the header row
     }
 }
 
