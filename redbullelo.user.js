@@ -14,25 +14,15 @@
     // Set a timer to check for the table and add the column, this is because the site does not reload when you interact, but if you use a mutator it seems to freeze, could probably be done better
     const checkTableInterval = setInterval(function() {
         const table = document.querySelector('table');
-        // console.log("Checking for table:", table); // Debug log
-
-        // Check if the "RBW Elo" column header exists
-        let rbwEloHeader = null;
+        
+        // Check if the row counter column exists
+        let rowCounterHeader = null;
         if (table) {
-            const headerCells = table.querySelectorAll('th');
-            for (let i = 0; i < headerCells.length; i++) { //This should be replaced with a query instead of a manaul loop
-                if (headerCells[i].textContent.trim() === "RBW Elo") {
-                    rbwEloHeader = headerCells[i];
-                    break;
-                }
-            }
+            rowCounterHeader = table.querySelector('th.row-counter');
         }
-        // console.log("RBW Elo header found:", rbwEloHeader); // Debug log
-
-        if (table && !rbwEloHeader) {
-            // console.log("Table found and column not added, enhancing table"); // Debug log
+    
+        if (table && !rowCounterHeader) {
             enhanceTable(table);
-            // clearInterval(checkTableInterval); // Clear the interval once the column is added, This is will result in the average missing if you intereact with the site without reloading
         }
     }, 500);
 
@@ -138,22 +128,28 @@
         observer.observe(tbody, { childList: true });
     }
 
-    function updateRowCounter(tbody) {
-        const rows = tbody.querySelectorAll('tr');
-        let counter = 1;
+function updateRowCounter(tbody) {
+    const rows = tbody.querySelectorAll('tr');
+    let counter = 1;
+    rows.forEach(row => {
+        let counterCell = row.querySelector('td.row-counter');
+        if (!counterCell) {
+            counterCell = document.createElement('td');
+            counterCell.classList.add('p-4', 'text-xl', 'align-middle', 'row-counter');
+            row.insertBefore(counterCell, row.firstChild); // Insert at the beginning of the row
+        }
+        counterCell.textContent = counter;
+        counter++;
+    });
 
-        rows.forEach(row => {
-            let counterCell = row.querySelector('td.row-counter'); // Select by class
-
-            if (!counterCell) { // If counter cell doesn't exist, create it
-                counterCell = document.createElement('td');
-                counterCell.classList.add('p-4', 'text-xl', 'align-middle', 'row-counter'); // Add the class
-                row.appendChild(counterCell);
-            }
-
-            counterCell.textContent = counter; // Update the counter value
-            counter++;
-        });
+    // Add header for the counter column if it doesn't exist
+    const headerRow = tbody.closest('table').querySelector('thead tr');
+    if (headerRow && !headerRow.querySelector('th.row-counter')) {
+        const counterHeader = document.createElement('th');
+        counterHeader.classList.add('p-4', 'text-xl', 'row-counter');
+        counterHeader.textContent = '#';
+        headerRow.insertBefore(counterHeader, headerRow.firstChild);
     }
+}
 
 })();
